@@ -1,0 +1,56 @@
+local neotreeopts = {
+    filesystem = {
+	hijack_netrw_behavior = "open_current",
+	filtered_items = {
+	    visible = true,
+	    hide_dotfiles = true,
+	    hide_gitignored = true,
+	}
+    },
+    -- Some keybindings from LazyVim
+    window = {
+	mappings = {
+	    ["<space>"] = "none",
+	    ["Y"] = {
+		function(state)
+		    local node = state.tree:get_node()
+		    local path = node:get_id()
+		    vim.fn.setreg("+", path, "c")
+		end,
+		desc = "Copy Path to Clipboard",
+	    },
+	    ["O"] = {
+		function(state)
+		    require("lazy.util").open(state.tree:get_node().path, { system = true })
+		end,
+		desc = "Open with System Application",
+	    },
+	},
+    },
+}
+
+return {
+    'nvim-neo-tree/neo-tree.nvim',
+    branch = "v3.x",
+    dependencies = {
+	"nvim-lua/plenary.nvim",
+	"MunifTanjim/nui.nvim",
+	"nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+    },
+    keys = {
+	{
+	    mode = 'n', '\\',
+	    ':Neotree position=float reveal_force_cwd<cr>',
+	    desc = 'Reveral current file in NeoTree',
+	    silent = true
+	},
+	{
+	    mode = 'n', '|',
+	    ':Neotree position=current<cr>',
+	    desc = 'Open NeoTree in full screen',
+	    silent = true
+	},
+    },
+    opts = neotreeopts,
+    lazy = false,
+}

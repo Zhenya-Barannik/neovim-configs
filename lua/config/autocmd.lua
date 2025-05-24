@@ -1,0 +1,40 @@
+-- Set multline comments in C to use //
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "c",
+    command = "setlocal commentstring=//\\ %s"
+})
+
+-- Briefly highlight on yanking (from LazyVim)
+vim.api.nvim_create_autocmd("TextYankPost", {
+    callback = function()
+	vim.highlight.on_yank()
+    end,
+})
+
+-- Resize splits if window got resized
+vim.api.nvim_create_autocmd({ "VimResized" }, {
+    callback = function()
+	local current_tab = vim.fn.tabpagenr()
+	vim.cmd("tabdo wincmd =")
+	vim.cmd("tabnext " .. current_tab)
+    end,
+})
+
+-- Close buffers with <q>
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = {
+	"help",
+	"lspinfo",
+	"qf",
+	"checkhealth",
+    },
+    callback = function(event)
+	vim.bo[event.buf].buflisted = false
+	vim.keymap.set("n", "q", "<cmd>close<cr>", {
+	    buffer = event.buf,
+	    silent = true,
+	    desc = "Quit buffer",
+	})
+    end,
+})
+

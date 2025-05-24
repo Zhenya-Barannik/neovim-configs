@@ -1,0 +1,104 @@
+#### Some NeoVim and related shell commands
+
+:e! - discard edits and reload current file
+:ene - edit new unnamed buffer
+:e file.txt - open file.txt to edit
+:bd! - delete buffer
+:map - show key mappings
+:set wrap! - toggle line wrap
+:set filetype=c - enable syntax highlighting for C without saving buffer
+:put = execute('messages') - print :messages into current buffer
+:cd %:p:h - cd to current file
+:so - source current file (useful for .lua confings)
+:!python -u main.py - call python in unbuffered mode (this way logs are printed in progress, not after end of execution)
+@: - repeat last : command, for example shell command ls can be called with !ls 
+
+Z Q - Quit without checking for changes (same as :q!)
+Z Z — Write changes to current file and close window
+
+A - Jump to the end of the line and enter input mode
+I - Jump to the start of the line and enter input mode
+D - Delete to the end of the line
+C - Cut to the end of the line and enter input mode
+J - Concat next line to this one
+o (O) - Add new line below (on top) and enter input mode
+
+L - Jump to the bottom of the screen
+H - Jump to the top of the screen
+^ - Jump to the beginnging of the line
+$ - Jump to the end of the line
+54 gg, 54 G - Jump to line 54
+g ; - Jump to the previous change location
+g , - Jump to the newer change location
+g x – Jump to the link destination
+g v - Select previous visual selection
+o - Move to the other side of visual selection changing selection front (in visual mode)
+* in visual/normal mode - search for selection / word under cursor forward
+# in visual/normal mode - search for selection / word under cursor backwards
+Ctrl-d (Ctrl-u) - Jump half a page down (up)
+Ctrl-w Ctrl-w - Jump to next window
+Ctrl-o, Ctrl-i - Jump back or forward in the jump list
+} - Jump to next empty line
+{ - Jump to prev empty line
+z z - Center on current line
+z b (z t) - Center shifting current line to the bottom (top)
+
+` a - Jump to mark a 
+` - marks
+
+Shift-V - Enter visual line mode and select line
+Ctrl-v - Enter visual block mode, then use A or I to edit
+
+e a - Append at the end of the next word	 
+v ] M - Select up to the end of function (works in Python code for example) 
+v i p (v a p) - Select inside paragraph (including after paragraph)
+v a [ - Select around brackets [ ]
+c t ( - Change till next ( symbol on the line 
+c T { - Change till previous { symbol on the line
+c i " - Change inside " "
+y i W - Yank inside WORD aka symbol under cursor
+y y p - Copy current line below
+
+i_Ctrl-R * - Paste from system register from insert mode 
+i_Ctrl-R_Ctrl_P * - Paste from system register without indentation from insert mode 
+"+c W - Change sending cut Word to the Plus register
+
+Ctrl-w H (J K L) - Move current window
+Ctrl-l - Remove highlight in normal mode (as does :noh)
+
+m a - Create local mark a (for use inside this buffer)
+m A - Create global mark A
+Ctrl-u - Delete line before cursor in insert mode
+Ctrl-w – Delete word before cursor in insert mode
+
+z f — Create fold from visual selection
+z o - Open fold
+
+g c - Comment selected line in visual mode.
+g c c - Comment current line in normal mode.
+g q - Transform long single line into many shorter lines
+
+/ - start search
+/csv\c - case insensitive search for csv
+n (N) - select next (previous) item while searching.
+:%s/>>>/}}/g - global search end change of >>> symbols to }} symbols
+
+K - get info when cursor is on symbol
+Ctrl-W d - info on error/warning
+i_Ctrl-X_Ctrl-O - Ctrl-X Ctrl-O triggers omni completion from insert mode
+i_Ctrl-X_Ctrl-F - Ctrl-X Ctrl-F triggers filename completion from insert mode
+https://neovim.io/doc/user/insert.html#_7.-insert-mode-completion
+
+#### New in Neovim 0.11
+g r n - Rename symbol
+g r r - Show references for symbol
+g r i - Show implementations for symbol
+[b (]b) - Navigate to next/previous buffer
+[q (]q) - Navigate to next/previous item in quickfix list
+] ([) Space - Add new line below (on top)
+
+#### Vim-illuminate
+x  <M-i>: Select textobject under cursor (It is not mapped in defaults, thus <M-i> triggers <Esc>i)
+o  <M-i>: Select textobject under cursor (It is not mapped in defaults, thus <M-i> triggers <Esc>i) 
+n  <M-p> (Alt-p): Move to previous reference (is not mapped in defaults)
+n  <M-n> (Alt-n): Move to next reference (is not mapped in defaults)
