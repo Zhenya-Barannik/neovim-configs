@@ -40,4 +40,10 @@ vim.lsp.config('bashls', {
     },
 })
 vim.lsp.enable('bashls') -- Works because of "neovim/nvim-lspconfig"
+
+vim.lsp.config('basedpyright', {
+    root_markers = { 'main.py', 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', 'Pipfile', 'pyrightconfig.json', '.git' },
+})
 vim.lsp.enable('basedpyright') -- Works because of "neovim/nvim-lspconfig"
+
+print("NVIM LOADED: init.lua")

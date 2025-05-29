@@ -27,11 +27,15 @@ L - Jump to the bottom of the screen
 H - Jump to the top of the screen
 ^ - Jump to the beginnging of the line
 $ - Jump to the end of the line
-54 gg, 54 G - Jump to line 54
+
 g ; - Jump to the previous change location
 g , - Jump to the newer change location
 g x – Jump to the link destination
+g f - Jump to file under cursor.
+54 gg, 54 G - Jump to line 54
+
 g v - Select previous visual selection
+
 o - Move to the other side of visual selection changing selection front (in visual mode)
 * in visual/normal mode - search for selection / word under cursor forward
 # in visual/normal mode - search for selection / word under cursor backwards

@@ -67,7 +67,7 @@ local function run_in_terminal(cmd, file_dir)
         end
     end
 
-    -- Construct the command to change to the file's directory before running the command
+    -- Change to the file's directory before running the cmd
     local full_cmd = 'cd "' .. file_dir .. '" && ' .. cmd .. '\n'
 
     if term_buf then
@@ -89,55 +89,39 @@ local function run_in_terminal(cmd, file_dir)
     end
 end
 
--- Function to save the file and run autocmd.sh if conditions are met
+-- Function to save the file *.x and run *.sh if conditions are met
 function Save_and_build()
     vim.cmd("w")
     vim.cmd("stopinsert")
 
     local file_pathname = vim.fn.expand('%:p')
     local file_dir = vim.fn.expand("%:p:h")
-    local file_name = vim.fn.expand("%:t:r")  -- Get the base name without extension
-    local autobuild_script = string.format("%s/autobuild_%s.sh", file_dir, file_name)
+    local file_name = vim.fn.expand("%:t:r") -- Get name without extension
 
-   if vim.fn.filereadable(autobuild_script) == 1 then
-        run_in_terminal(string.format("zsh %s", autobuild_script), file_dir)
-        print(string.format("Running %s", autobuild_script))
+    -- Example: for data.py script will try to find data.sh
+    local script_to_run = string.format("%s/%s.sh", file_dir, file_name)
+
+    if vim.fn.filereadable(script_to_run) == 1 then
+	local command = string.format("zsh -c 'source ~/.zshrc && \"%s\"'", script_to_run)
+        run_in_terminal(command, file_dir)
+	print(string.format("FOUND: %s", script_to_run))
+        print(string.format("RUNNING: %s", command))
         return
     else
-	print(string.format("No such script: %s", autobuild_script))
-    end
-
-    -- Get the file directory and filetype
-    local filetype = vim.bo.filetype
-    if filetype == "python" then
-	run_in_terminal(
-	    string.format("python \"%s\"", file_pathname), file_dir
-	)
-	print(
-	    string.format("Running this command: python \"%s\"", file_pathname)
-	)
-    elseif filetype == "html" then
-	run_in_terminal(
-	    string.format("open -g %s", file_pathname), file_dir
-	)
-	print(
-	    string.format("Running this command: open -g %s", file_pathname)
-	)
-    elseif filetype == "lua" then
-	vim.cmd("so")
-	print(
-	    string.format("Running this vim command: so %s", file_pathname)
-	)
-    elseif filetype == "sh" then
-	run_in_terminal(
-	    string.format("chmod +x %s", file_pathname), file_dir
-	)
-	run_in_terminal(
-	    string.format("%s", file_pathname), file_dir
-	)
-	print(
-	    string.format("Running this command: python %s", file_pathname)
-	)
+	print(string.format("NOT FOUND: %s", script_to_run))
+	local filetype = vim.bo.filetype
+	if filetype == "python" then
+	    local command = string.format("zsh -c 'source ~/.zshrc && python \"%s\"'", file_pathname)
+	    run_in_terminal(command, file_dir)
+	    print(string.format("RUNNING: %s", command))
+	elseif filetype == "html" then
+	    local command = string.format("open -g %s", file_pathname)
+	    run_in_terminal(command, file_dir)
+	    print(string.format("RUNNING: %s", command))
+	elseif filetype == "lua" then
+	    vim.cmd("so")
+	    print(string.format("NVIM RUNNING: so %s", file_pathname))
+	end
     end
 end
 
