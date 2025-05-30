@@ -143,12 +143,12 @@ map("i", "<M-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move line Up" })
 map("v", "<M-j>", ":m '>+1<cr>gv=gv", { desc = "Move selected lines Down" })
 map("v", "<M-k>", ":m '<-2<cr>gv=gv", { desc = "Move selected lines Up" })
 
-function Interrupt_Terminal()
+function Interrupt_Terminal_or_Default()
     local t_buffer = find_terminal_buffer()
     if t_buffer ~= nil then
 	vim.api.nvim_chan_send(vim.b[t_buffer].terminal_job_id, '\x03')
     else
-    print("No open terminal Buffer, so nothing to cancel")
+    print("No open terminal Buffer, so nothing to interrupt.")
 	vim.api.nvim_input('<C-c>')
     end
     return nil
@@ -157,19 +157,26 @@ end
 -- <leader>fc is from LazyVim
 map("n", "<leader>fc", "<cmd>Telescope find_files cwd=~/.config/nvim<cr>", { desc = "Find Config File" })
 
--- <leader>fw is from NVChad
--- -- Improved version of map("n", "<leader>fw", "<cmd>Telescope live_grep<cr>", { desc = "Find Word (live grep)" })
+-- <leader>fg is from Telescope
+-- https://github.com/nvim-telescope/telescope.nvim
+-- Improved version of
+-- map("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { desc = "Live grep" })
 map("n", "<leader>fg", function()
+    local cwd = vim.fn.getcwd()
+    vim.cmd("Telescope live_grep cwd=" .. cwd)
+    vim.notify(string.format("SEARCHING IN: %s", cwd), vim.log.levels.INFO)
+end, { desc = "Grep in cwd" })
+
+map("n", "<leader>gg", function()
     local git_root = get_git_root()
     if not git_root then
 	print("Not inside a Git repository")
 	return
     end
-    -- require('telescope.builtin.live_grep').git_files({ cwd = git_root })
     vim.cmd("Telescope live_grep cwd=" .. git_root)
-end, { desc = "Find Word in git repo (live grep)" })
+    vim.notify(string.format("SEARCHING IN: %s", git_root), vim.log.levels.INFO)
+end, { desc = "Grep in git repo" })
 
---
 -- <leader>fb is from LazyVim
 map("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Find Buffers" })
 
@@ -225,17 +232,10 @@ map("n", "q", function()
     vim.api.nvim_feedkeys("q", "n", true)
 end, { desc = "Close floating window or send q" })
 
--- Show all normal mode keymaps under <leader>? (from LazyVim)
-map("n", "<leader>?", function() require("which-key").show("", { mode = "n" }) end, { desc = "Show Normal Mode Keymaps" })
+-- https://github.com/nvim-telescope/telescope.nvim
+map({"n", "v"}, "<leader>?", function() require("which-key").show("", { mode = "n" }) end, { desc = "Show keymaps" })
+
 map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", { desc = "Go to Definition" }) -- (LazyVim and LspZero defaults)
 map("n", "grt", "<cmd>lua vim.lsp.buf.type_definition()<cr>", { desc = "Type Definition" }) -- (LazyVim)
 
--- -- Window commands in Hydra mode under <C-w><space> (from LazyVim)
--- map({'n', 'x'}, '<leader><C-w>', function()
---     require("which-key").show({keys = "<c-w>", loop = true})
--- end, { desc = "Window Hydra Mode" })
-
--- vim.keymap.set("v", "<leader>r", function()
---     local selected_text = table.concat(vim.fn.getline("'<", "'>"), "\n")
---     vim.cmd("lua " .. selected_text)
--- end, { desc = "Run selected Lua code" })
+map("n", "\\", "<CMD>Oil<CR>", { desc = "Open parent directory" })

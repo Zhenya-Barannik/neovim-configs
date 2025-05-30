@@ -19,23 +19,17 @@ map({'n', 'v', 'i'}, '<C-e>', '<End>', { noremap = true, silent = true }) -- Lik
 map({'n', 'v', 'i'}, '<C-a>', '<Home>', { noremap = true, silent = true})
 vim.cmd('cnoremap <C-a> <Home>')
 
--- Rebinds "Ctrl-S - Signature help in insert mode"
--- Save file (from LazyVim, NvChad)
--- https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua#L45
--- https://github.com/NvChad/NvChad/blob/v2.5/lua/nvchad/mappings.lua
-map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save" })
-
 -- n <C-K> is not mapped 
 -- v <C-K> is not mapped
 -- i <C-K> is mapped to enter digraph
 -- https://www.lazyvim.org/keymaps
 map("i", "<C-k>", function() vim.lsp.buf.signature_help() end) -- from LazyVim
 
--- Show keymaps for all modes
-map({"n", "v", "i", "t"}, "<C-h>", function()
-    local mode = vim.api.nvim_get_mode().mode
-    require("which-key").show("", { mode = mode })
-end, { desc = "Show Keymaps for Current Mode" })
+-- Remaps "Ctrl-S - Signature help in insert mode"
+-- Save file (from LazyVim, NvChad)
+-- https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua#L45
+-- https://github.com/NvChad/NvChad/blob/v2.5/lua/nvchad/mappings.lua
+map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save" })
 
 -- n <C-b> is mapped to scroll screen by default
 -- v <C-b> is mapped to scroll screen by default
@@ -46,12 +40,21 @@ map({ "i", "x", "n", "s" }, "<C-b>", Save_and_build, { desc = "Save and Build" }
 -- v <C-c> exists visual selection by default
 -- i <C-c> exist insert mode by default
 -- Smart Ctrl-C: Terminal interrupt if terminal exists, otherwise normal Ctrl-C
-map({"n", "v", "i"}, "<C-c>", Interrupt_Terminal, { desc = 'Smart Ctrl-C' })
+map({"n", "v", "i"}, "<C-c>", Interrupt_Terminal_or_Default, { desc = 'Smart Ctrl-C' })
 
--- n <C-H> is mapped to move cursor left by default
--- v <C-H> is mapped to move cursor left by default
--- i <C-H> is mapped to backspace by default
--- Map Alt+h to toggle terminal (from NvChad)
+-- n_<Alt+h> seems to be not mapped by default
+-- Maps it to toggle terminal (from NvChad)
 -- https://github.com/NvChad/NvChad/blob/v2.5/lua/nvchad/mappings.lua
 map({ "n", "t" }, "<M-h>", Toggle_terminal, { desc = "Toggle Terminal" })
 map('t', '<Esc>', [[<C-\><C-n>]], { desc = "Terminal to Normal Mode" })
+
+-- Telescope suggests use of <C-h> to show mappings
+-- https://github.com/nvim-telescope/telescope.nvim
+-- n_<C-h> seems to be not mapped (h moves cursor left) by default
+-- v_<C-h> seems to be not mapped (h moves cursor left) by default
+-- i_<C-h> seems to be mapped to backspace by default
+-- Show keymaps for all modes
+map({"n", "v", "i", "t"}, "<C-h>", function()
+    local mode = vim.api.nvim_get_mode().mode
+    require("which-key").show("", { mode = mode })
+end, { desc = "Show Keymaps for Current Mode" })

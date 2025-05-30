@@ -91,6 +91,8 @@ K - get info when cursor is on symbol
 Ctrl-W d - info on error/warning
 i_Ctrl-X_Ctrl-O - Ctrl-X Ctrl-O triggers omni completion from insert mode
 i_Ctrl-X_Ctrl-F - Ctrl-X Ctrl-F triggers filename completion from insert mode
+i_Ctrl-O - Insert-Command mode 
+
 https://neovim.io/doc/user/insert.html#_7.-insert-mode-completion
 
 #### New in Neovim 0.11
