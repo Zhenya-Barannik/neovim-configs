@@ -8,7 +8,7 @@
 :set wrap! - toggle line wrap
 :set filetype=c - enable syntax highlighting for C without saving buffer
 :put = execute('messages') - print :messages into current buffer
-:cd %:p:h - cd to current file
+:cd %:p:h - cd to the current file
 :so - source current file (useful for .lua confings)
 :!python -u main.py - call python in unbuffered mode (this way logs are printed in progress, not after end of execution)
 @: - repeat last : command, for example shell command ls can be called with !ls 
@@ -35,6 +35,7 @@ g f - Jump to file under cursor.
 54 gg, 54 G - Jump to line 54
 
 g v - Select previous visual selection
+= - Format code from visual mode
 
 o - Move to the other side of visual selection changing selection front (in visual mode)
 * in visual/normal mode - search for selection / word under cursor forward

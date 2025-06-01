@@ -239,3 +239,9 @@ map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", { desc = "Go to Definiti
 map("n", "grt", "<cmd>lua vim.lsp.buf.type_definition()<cr>", { desc = "Type Definition" }) -- (LazyVim)
 
 map("n", "\\", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+
+vim.keymap.set("n", '<leader>h',
+    function()
+	vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({0}),{0})
+    end
+)
