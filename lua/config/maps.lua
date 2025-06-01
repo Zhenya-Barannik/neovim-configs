@@ -243,5 +243,6 @@ map("n", "\\", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 vim.keymap.set("n", '<leader>h',
     function()
 	vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({0}),{0})
-    end
+    end,
+    { desc = "Toggle inlay hints" }
 )
