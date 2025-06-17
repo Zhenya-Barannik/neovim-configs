@@ -14,6 +14,7 @@
 :let @+=@% - Copy current file path
 :map - show key mappings
 :verbose map <C-s> - Show commands mapped to a specific keybind, <C-s> here 
+:%y - yank whole buffer
 
 Z Q - Quit without checking for changes (same as :q!)
 Z Z — Write changes to current file and close window
