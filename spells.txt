@@ -1,18 +1,19 @@
 #### Some NeoVim and related shell commands
 
 :e! - discard edits and reload current file
-:ene - edit new unnamed buffer
+:ene - edit in new unnamed buffer
 :e file.txt - open file.txt to edit
 :bd! - delete buffer
-:map - show key mappings
 :set wrap! - toggle line wrap
-:set filetype=c - enable syntax highlighting for C without saving buffer
-:put = execute('messages') - print :messages into current buffer
+:set filetype=c - enable syntax highlighting for C in buffer without saving it
+:put = execute('messages') - print :messages into current buffer, better use Bmessages
 :cd %:p:h - cd to the current file
 :so - source current file (useful for .lua confings)
 :!python -u main.py - call python in unbuffered mode (this way logs are printed in progress, not after end of execution)
-@: - repeat last : command, for example shell command ls can be called with !ls 
+@: - repeat last : command, for example ls can be called with :!ls and repeated with @:
 :let @+=@% - Copy current file path
+:map - show key mappings
+:verbose map <C-s> - Show commands mapped to a specific keybind, <C-s> here 
 
 Z Q - Quit without checking for changes (same as :q!)
 Z Z — Write changes to current file and close window

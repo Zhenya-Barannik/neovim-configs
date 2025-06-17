@@ -3,11 +3,12 @@ local map = vim.keymap.set
 function Interrupt_Terminal_or_Default()
     local t_buffer = find_terminal_buffer()
     if t_buffer ~= nil then
-	vim.api.nvim_chan_send(vim.b[t_buffer].terminal_job_id, '\x03')
-    else
-    print("No open terminal Buffer, so nothing to interrupt.")
-	vim.api.nvim_input('<C-c>')
+        local job_id = vim.b[t_buffer].terminal_job_id
+        if job_id then
+            vim.api.nvim_chan_send(job_id, '\x03')
+        end
     end
+    vim.cmd('stopinsert')
     return nil
 end
 
@@ -18,10 +19,10 @@ map({'n', 'x'}, 'p', '"+p')
 map({'n', 'x'}, 'P', '"+P')
 map({'x'}, 'x', '"+x') -- Cutting one char from normal mode will not send char to the system clipboard
 
--- Emacs-style <C-a>, <C-e> keybindings already work in insert mode inside terminal, but not in other modes.
--- n <C-a> is not mapped by default
+-- Emacs-style <C-a>, <C-e> keybindings already do work in insert mode inside terminal, but not in other modes.
+-- n <C-a> is mapped to increment number default
 -- v <C-a> exits from visual mode by default
--- i <C-a> is mapped to insert previously inserted 
+-- i <C-a> is mapped to insert previously inserted by default
 -- n <C-e> is mapped to scroll down by one line by default
 -- v <C-e> is mapped to scroll down by one line by default
 -- i <C-e> is mapped to insert the text from the line below by default
@@ -36,7 +37,7 @@ vim.cmd('cnoremap <C-a> <Home>')
 -- https://www.lazyvim.org/keymaps
 map("i", "<C-k>", function() vim.lsp.buf.signature_help() end) -- from LazyVim
 
--- Remaps "Ctrl-S - Signature help in insert mode"
+-- n <C-s> is mapped to signature help in insert mode, we use C-k instead
 -- Save file (from LazyVim, NvChad)
 -- https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua#L45
 -- https://github.com/NvChad/NvChad/blob/v2.5/lua/nvchad/mappings.lua
@@ -58,14 +59,3 @@ map({"n", "v", "i"}, "<C-c>", Interrupt_Terminal_or_Default, { desc = 'Smart Ctr
 -- https://github.com/NvChad/NvChad/blob/v2.5/lua/nvchad/mappings.lua
 map({ "n", "t" }, "<M-h>", Toggle_terminal, { desc = "Toggle Terminal" })
 map('t', '<Esc>', [[<C-\><C-n>]], { desc = "Terminal to Normal Mode" })
-
--- Telescope suggests use of <C-h> to show mappings
--- https://github.com/nvim-telescope/telescope.nvim
--- n_<C-h> seems to be not mapped (h moves cursor left) by default
--- v_<C-h> seems to be not mapped (h moves cursor left) by default
--- i_<C-h> seems to be mapped to backspace by default
--- Show keymaps for all modes
-map({"n", "v", "i", "t"}, "<C-h>", function()
-    local mode = vim.api.nvim_get_mode().mode
-    require("which-key").show("", { mode = mode })
-end, { desc = "Show Keymaps for Current Mode" })
