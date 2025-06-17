@@ -1,5 +1,16 @@
 local map = vim.keymap.set
 
+function Interrupt_Terminal_or_Default()
+    local t_buffer = find_terminal_buffer()
+    if t_buffer ~= nil then
+	vim.api.nvim_chan_send(vim.b[t_buffer].terminal_job_id, '\x03')
+    else
+    print("No open terminal Buffer, so nothing to interrupt.")
+	vim.api.nvim_input('<C-c>')
+    end
+    return nil
+end
+
 -- "Yank", "Paste", "Cut in visual mode" always use system clipboard
 map({'n', 'x'}, 'y', '"+y')
 map({'n', 'x'}, 'Y', '"+Y')

@@ -12,6 +12,7 @@
 :so - source current file (useful for .lua confings)
 :!python -u main.py - call python in unbuffered mode (this way logs are printed in progress, not after end of execution)
 @: - repeat last : command, for example shell command ls can be called with !ls 
+:let @+=@% - Copy current file path
 
 Z Q - Quit without checking for changes (same as :q!)
 Z Z — Write changes to current file and close window

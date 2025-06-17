@@ -11,7 +11,7 @@ local function get_git_root()
 end
 
 -- Function to get first terminal buffer if there are any
-local function find_terminal_buffer()
+function find_terminal_buffer()
     for _, buf in ipairs(vim.api.nvim_list_bufs()) do
 	if vim.bo[buf].buftype == 'terminal' then
 	    return buf
@@ -142,17 +142,6 @@ map("i", "<M-j>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move line Down" })
 map("i", "<M-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move line Up" })
 map("v", "<M-j>", ":m '>+1<cr>gv=gv", { desc = "Move selected lines Down" })
 map("v", "<M-k>", ":m '<-2<cr>gv=gv", { desc = "Move selected lines Up" })
-
-function Interrupt_Terminal_or_Default()
-    local t_buffer = find_terminal_buffer()
-    if t_buffer ~= nil then
-	vim.api.nvim_chan_send(vim.b[t_buffer].terminal_job_id, '\x03')
-    else
-    print("No open terminal Buffer, so nothing to interrupt.")
-	vim.api.nvim_input('<C-c>')
-    end
-    return nil
-end
 
 -- <leader>fc is from LazyVim
 map("n", "<leader>fc", "<cmd>Telescope find_files cwd=~/.config/nvim<cr>", { desc = "Find Config File" })
