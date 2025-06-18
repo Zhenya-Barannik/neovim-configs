@@ -59,3 +59,6 @@ map({"n", "v", "i"}, "<C-c>", Interrupt_Terminal_or_Default, { desc = 'Smart Ctr
 -- https://github.com/NvChad/NvChad/blob/v2.5/lua/nvchad/mappings.lua
 map({ "n", "t" }, "<M-h>", Toggle_terminal, { desc = "Toggle Terminal" })
 map('t', '<Esc>', [[<C-\><C-n>]], { desc = "Terminal to Normal Mode" })
+
+-- s is the same as cl
+-- Mini.surround disables mapping for s
