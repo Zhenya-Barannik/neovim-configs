@@ -7,9 +7,6 @@ vim.cmd[[set backspace+=nostop]]
 -- Use 4 spaces to indent
 vim.cmd[[set shiftwidth=4]]
 
--- Set russian language mapping
-vim.api.nvim_command('set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz')
-
 -- Show linenumbers
 vim.api.nvim_command('set number')
 
@@ -21,3 +18,6 @@ vim.wo.signcolumn = "yes:1"
 
 -- Disable auto-selection in omni-completion
 vim.opt.completeopt:append('noselect')
+
+-- This russian language mapping is not used now, since we are using Toggle_keyboard_layout
+-- vim.api.nvim_command('set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz')

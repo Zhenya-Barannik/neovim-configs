@@ -221,12 +221,6 @@ map("n", "q", function()
     vim.api.nvim_feedkeys("q", "n", true)
 end, { desc = "Close floating window or send q" })
 
--- https://github.com/nvim-telescope/telescope.nvim but for all modes
-map({"n", "v", "i", "t"}, "<C-/>", function()
-    local mode = vim.api.nvim_get_mode().mode
-    require("which-key").show("", { mode = mode })
-end, { desc = "Show Keymaps for Current Mode" })
-
 map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", { desc = "Go to Definition" }) -- (LazyVim and LspZero defaults)
 map("n", "grt", "<cmd>lua vim.lsp.buf.type_definition()<cr>", { desc = "Type Definition" }) -- (LazyVim)
 map("n", "\\", "<CMD>Oil<CR>", { desc = "Open parent directory" })
@@ -237,3 +231,21 @@ vim.keymap.set("n", '<leader>h',
     end,
     { desc = "Toggle inlay hints" }
 )
+
+-- https://github.com/nvim-telescope/telescope.nvim but for all modes
+map({"n", "v", "i", "t"}, "<C-/>", function()
+    local mode = vim.api.nvim_get_mode().mode
+    require("which-key").show("", { mode = mode })
+end, { desc = "Show Keymaps for Current Mode" })
+
+-- Toggle between Russian and QWERTY layouts
+function Toggle_keyboard_layout()
+    if vim.bo.keymap == "" then
+        vim.api.nvim_command('set keymap=russian-jcuken')
+    else
+        vim.api.nvim_command('set keymap=')
+    end
+end
+
+-- Map it to Cmd+Space
+vim.keymap.set('n', '<C-Space>', Toggle_keyboard_layout, { desc = "Toggle keyboard layout" })

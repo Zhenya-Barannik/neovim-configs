@@ -65,7 +65,7 @@ c t ( - Change till next ( symbol on the line
 c T { - Change till previous { symbol on the line
 c i " - Change inside " "
 y i W - Yank inside WORD aka symbol under cursor
-y y p - Copy current line below
+y y p - Copy current line and paste it below
 
 i_Ctrl-R * - Paste from system register from insert mode 
 i_Ctrl-R_Ctrl_P * - Paste from system register without indentation from insert mode 

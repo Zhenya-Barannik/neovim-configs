@@ -24,11 +24,6 @@ return {
 	"neovim/nvim-lspconfig"
     },
     {
-	"ariel-frischer/bmessages.nvim",
-	event = "CmdlineEnter",
-	opts = {}
-    },
-    {
 	"rrethy/vim-illuminate"
     },
     {
