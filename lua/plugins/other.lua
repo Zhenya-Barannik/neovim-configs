@@ -24,9 +24,9 @@ return {
 	"neovim/nvim-lspconfig"
     },
     {
-      "ariel-frischer/bmessages.nvim",
-      event = "CmdlineEnter",
-      opts = {}
+	"ariel-frischer/bmessages.nvim",
+	event = "CmdlineEnter",
+	opts = {}
     },
     {
 	"rrethy/vim-illuminate"
@@ -46,16 +46,7 @@ return {
 	    end
 	end,
     },
-	--    {
-	-- "gbprod/nord.nvim",
-	-- lazy = false,
-	-- priority = 1000,
-	-- config = function()
-	--     require("nord").setup({})
-	--     vim.cmd.colorscheme("nord")
-	-- end,
-	--    },
-       {
+    {
 	"zenbones-theme/zenbones.nvim",
 	-- Optionally install Lush. Allows for more configuration or extending the colorscheme
 	-- If you don't want to install lush, make sure to set g:zenbones_compat = 1
@@ -68,5 +59,5 @@ return {
 	    vim.g.zenbones = { darkness = 'stark' };
 	    vim.cmd('colorscheme zenbones');
 	end;
-       }
+    }
 }
