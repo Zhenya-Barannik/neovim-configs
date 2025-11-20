@@ -1,64 +1,46 @@
 local map = vim.keymap.set
 
-function Interrupt_Terminal_or_Default()
-    local t_buffer = find_terminal_buffer()
-    if t_buffer ~= nil then
-        local job_id = vim.b[t_buffer].terminal_job_id
-        if job_id then
-            vim.api.nvim_chan_send(job_id, '\x03')
-        end
-    end
-    vim.cmd('stopinsert')
-    return nil
-end
-
 -- "Yank", "Paste", "Cut in visual mode" always use system clipboard
 map({'n', 'x'}, 'y', '"+y')
 map({'n', 'x'}, 'Y', '"+Y')
 map({'n', 'x'}, 'p', '"+p')
 map({'n', 'x'}, 'P', '"+P')
-map({'x'}, 'x', '"+x') -- Cutting one char from normal mode will not send char to the system clipboard
+
+-- Cutting one char from normal mode will not send char to the system clipboard
+map({'x'}, 'x', '"+x')
 
 -- Emacs-style <C-a>, <C-e> keybindings already do work in insert mode inside terminal, but not in other modes.
 -- n <C-a> is mapped to increment number default
 -- v <C-a> exits from visual mode by default
 -- i <C-a> is mapped to insert previously inserted by default
+map({'n', 'v', 'i', 'c'}, '<C-a>', '<Home>', { noremap = true, silent = true})
+
 -- n <C-e> is mapped to scroll down by one line by default
 -- v <C-e> is mapped to scroll down by one line by default
 -- i <C-e> is mapped to insert the text from the line below by default
 -- https://github.com/NvChad/NvChad/blob/v2.5/lua/nvchad/mappings.lua
 map({'n', 'v', 'i'}, '<C-e>', '<End>', { noremap = true, silent = true }) -- Like in NvChad, but also for 'n' and 'v'
-map({'n', 'v', 'i'}, '<C-a>', '<Home>', { noremap = true, silent = true})
-vim.cmd('cnoremap <C-a> <Home>')
 
--- n <C-K> is not mapped 
--- v <C-K> is not mapped
--- i <C-K> is mapped to enter digraph
--- https://www.lazyvim.org/keymaps
-map("i", "<C-k>", function() vim.lsp.buf.signature_help() end) -- from LazyVim
-
--- n <C-s> is mapped to signature help in insert mode, we use C-k instead
+-- n <C-s> is mapped to signature help in insert mode (we use C-k instead)
 -- Save file (from LazyVim, NvChad)
--- https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua#L45
+-- https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- https://github.com/NvChad/NvChad/blob/v2.5/lua/nvchad/mappings.lua
 map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save" })
 
--- n <C-b> is mapped to scroll screen by default
--- v <C-b> is mapped to scroll screen by default
--- i <C-b> attemts to insert character by default
-map({ "i", "x", "n", "s" }, "<C-b>", Save_and_build, { desc = "Save and Build" })
+-- n <C-k> is not mapped by default
+-- v <C-k> is not mapped by default
+-- i <C-k> is mapped to enter digraph by default
+-- https://www.lazyvim.org/keymaps
+map("i", "<C-k>", function() vim.lsp.buf.signature_help() end) -- from lazyvim
 
 -- n <C-c> does nothing by default 
 -- v <C-c> exists visual selection by default
 -- i <C-c> exist insert mode by default
 -- Smart Ctrl-C: Terminal interrupt if terminal exists, otherwise normal Ctrl-C
-map({"n", "v", "i"}, "<C-c>", Interrupt_Terminal_or_Default, { desc = 'Smart Ctrl-C' })
+map({"n", "v", "i"}, "<C-c>", Interrupt_terminal_and_stop_insert, { desc = 'Smart Ctrl-C' })
 
--- n_<Alt+h> seems to be not mapped by default
--- Maps it to toggle terminal (from NvChad)
--- https://github.com/NvChad/NvChad/blob/v2.5/lua/nvchad/mappings.lua
-map({ "n", "t" }, "<M-h>", Toggle_terminal, { desc = "Toggle Terminal" })
-map('t', '<Esc>', [[<C-\><C-n>]], { desc = "Terminal to Normal Mode" })
+ -- Modified gx that will reveal file in finder instead of opening it 
+map('n', 'gx', Reveal_file_or_open_URL, { desc = "Reveal file or open URL", noremap = true })
 
 -- s is the same as cl
 -- Mini.surround disables mapping for s

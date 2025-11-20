@@ -1,5 +1,3 @@
--- Whichkey is used for showing all available keybinds starting in n, x, i modes
--- Mini.clue is used for the rest
 return {
     "folke/which-key.nvim",
     event = "VeryLazy",
@@ -10,5 +8,14 @@ return {
 	},
     },
     keys = {},
+    init = function()
+	-- Setup groups
+	local wk = require("which-key")
+	wk.add({
+	    { "<leader>g", group = "Git" },
+	    { "<leader>f", group = "Find" },
+	    { "g", desc = "goto" },
+	})
+    end
 }
 

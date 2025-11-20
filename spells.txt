@@ -6,7 +6,6 @@
 :bd! - delete buffer
 :set wrap! - toggle line wrap
 :set filetype=c - enable syntax highlighting for C in buffer without saving it
-:put = execute('messages') - print :messages into current buffer, better use Bmessages
 :cd %:p:h - cd to the current file
 :so - source current file (useful for .lua confings)
 :!python -u main.py - call python in unbuffered mode (this way logs are printed in progress, not after end of execution)
@@ -101,14 +100,23 @@ https://neovim.io/doc/user/insert.html#_7.-insert-mode-completion
 
 #### New in Neovim 0.11
 g r n - Rename symbol
-g r r - Show references for symbol
-g r i - Show implementations for symbol
-[b (]b) - Navigate to next/previous buffer
-[q (]q) - Navigate to next/previous item in quickfix list
-] ([) Space - Add new line below (on top)
+g r r - Show references for the symbol
+g r t - Show type definition for the symbol
+[b   ]b - Navigate to next/previous buffer
+[q   ]q - Navigate to next/previous item in [Quickfix List]
+]Space   [Space - Add new line below / on top)
 
 #### Vim-illuminate
 x  <M-i>: Select textobject under cursor (It is not mapped in defaults, thus <M-i> triggers <Esc>i)
 o  <M-i>: Select textobject under cursor (It is not mapped in defaults, thus <M-i> triggers <Esc>i) 
 n  <M-p> (Alt-p): Move to previous reference (is not mapped in defaults)
 n  <M-n> (Alt-n): Move to next reference (is not mapped in defaults)
+
+:restart - Restarts Neovim (combines well with rmagatti/auto-session)
+:messages - Shows messages in separate buffer.
+:lua `print("Hello")` - executes lua code
+:nmap <C-q> - gives info what <C-q> does
+:lua= vim.api.nvim_list_bufs() - prints output of nvim_list_bufs()
+
+i <C-k> (Ctrl-K in insert mode) - show signature
+n . (dot in normal mode) - repeat last action

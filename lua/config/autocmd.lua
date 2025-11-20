@@ -1,3 +1,11 @@
+-- Enable treesitter based highlighting for selected filetypes
+vim.api.nvim_create_autocmd('FileType', {
+    pattern = { 'markdown', 'c', 'sh', 'julia', 'rust', 'python'},
+    callback = function()
+	vim.treesitter.start()
+    end,
+})
+
 -- Set multline comments in C to use //
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "c",
