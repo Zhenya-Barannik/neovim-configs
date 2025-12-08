@@ -71,13 +71,4 @@ vim.lsp.config('bashls', {
 })
 vim.lsp.enable('bashls') -- Works because of "neovim/nvim-lspconfig"
 
--- https://github.com/aviatesk/JETLS.jl?tab=readme-ov-file
-vim.lsp.config("julia_jetls", {
-    cmd = {
-        "jetls",
-        "--threads=auto",
-        "--",
-    },
-    filetypes = {"julia"},
-})
-vim.lsp.enable('julia_jetls')
+vim.lsp.enable('julials')
