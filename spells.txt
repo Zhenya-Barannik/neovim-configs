@@ -1,17 +1,19 @@
 #### Some NeoVim and related shell commands
 
 :e! - discard edits and reload current file
-:ene - edit new unnamed buffer
+:ene - edit in new unnamed buffer
 :e file.txt - open file.txt to edit
 :bd! - delete buffer
-:map - show key mappings
 :set wrap! - toggle line wrap
-:set filetype=c - enable syntax highlighting for C without saving buffer
-:put = execute('messages') - print :messages into current buffer
-:cd %:p:h - cd to current file
+:set filetype=c - enable syntax highlighting for C in buffer without saving it
+:cd %:p:h - cd to the current file
 :so - source current file (useful for .lua confings)
 :!python -u main.py - call python in unbuffered mode (this way logs are printed in progress, not after end of execution)
-@: - repeat last : command, for example shell command ls can be called with !ls 
+@: - repeat last : command, for example ls can be called with :!ls and repeated with @:
+:let @+=@% - Copy current file path
+:map - show key mappings
+:verbose map <C-s> - Show commands mapped to a specific keybind, <C-s> here 
+:%y - yank whole buffer
 
 Z Q - Quit without checking for changes (same as :q!)
 Z Z — Write changes to current file and close window
@@ -27,11 +29,16 @@ L - Jump to the bottom of the screen
 H - Jump to the top of the screen
 ^ - Jump to the beginnging of the line
 $ - Jump to the end of the line
-54 gg, 54 G - Jump to line 54
+
 g ; - Jump to the previous change location
 g , - Jump to the newer change location
 g x – Jump to the link destination
+g f - Jump to file under cursor.
+54 gg, 54 G - Jump to line 54
+
 g v - Select previous visual selection
+= - Format code from visual mode
+
 o - Move to the other side of visual selection changing selection front (in visual mode)
 * in visual/normal mode - search for selection / word under cursor forward
 # in visual/normal mode - search for selection / word under cursor backwards
@@ -57,7 +64,7 @@ c t ( - Change till next ( symbol on the line
 c T { - Change till previous { symbol on the line
 c i " - Change inside " "
 y i W - Yank inside WORD aka symbol under cursor
-y y p - Copy current line below
+y y p - Copy current line and paste it below
 
 i_Ctrl-R * - Paste from system register from insert mode 
 i_Ctrl-R_Ctrl_P * - Paste from system register without indentation from insert mode 
@@ -87,18 +94,29 @@ K - get info when cursor is on symbol
 Ctrl-W d - info on error/warning
 i_Ctrl-X_Ctrl-O - Ctrl-X Ctrl-O triggers omni completion from insert mode
 i_Ctrl-X_Ctrl-F - Ctrl-X Ctrl-F triggers filename completion from insert mode
+i_Ctrl-O - Insert-Command mode 
+
 https://neovim.io/doc/user/insert.html#_7.-insert-mode-completion
 
 #### New in Neovim 0.11
 g r n - Rename symbol
-g r r - Show references for symbol
-g r i - Show implementations for symbol
-[b (]b) - Navigate to next/previous buffer
-[q (]q) - Navigate to next/previous item in quickfix list
-] ([) Space - Add new line below (on top)
+g r r - Show references for the symbol
+g r t - Show type definition for the symbol
+[b   ]b - Navigate to next/previous buffer
+[q   ]q - Navigate to next/previous item in [Quickfix List]
+]Space   [Space - Add new line below / on top)
 
 #### Vim-illuminate
 x  <M-i>: Select textobject under cursor (It is not mapped in defaults, thus <M-i> triggers <Esc>i)
 o  <M-i>: Select textobject under cursor (It is not mapped in defaults, thus <M-i> triggers <Esc>i) 
 n  <M-p> (Alt-p): Move to previous reference (is not mapped in defaults)
 n  <M-n> (Alt-n): Move to next reference (is not mapped in defaults)
+
+:restart - Restarts Neovim (combines well with rmagatti/auto-session)
+:messages - Shows messages in separate buffer.
+:lua `print("Hello")` - executes lua code
+:nmap <C-q> - gives info what <C-q> does
+:lua= vim.api.nvim_list_bufs() - prints output of nvim_list_bufs()
+
+i <C-k> (Ctrl-K in insert mode) - show signature
+n . (dot in normal mode) - repeat last action
