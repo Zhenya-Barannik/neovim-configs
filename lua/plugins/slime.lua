@@ -30,8 +30,24 @@ return {
 
     -- Visual Mode (Send Selection/Region)
     vim.keymap.set("v", "<C-q>", function()
-	vim.cmd("normal! gv") -- Re-select the visual region
-	trigger_slime_and_scroll("<Plug>SlimeRegionSend")
+	local filetype = vim.bo.filetype
+
+	local esc = vim.api.nvim_replace_termcodes("<Esc>", true, false, true)
+	vim.api.nvim_feedkeys(esc, "x", false)
+	if filetype == "julia" then
+	    vim.cmd("normal! gv") -- Re-select the visual region
+	    trigger_slime_and_scroll("<Plug>SlimeRegionSend")
+	elseif filetype == "lua" then
+	    local success, err = pcall(function()
+		vim.cmd("'<,'>source")
+	    end)
+
+	    if not success then
+		vim.notify("Error sourcing Lua: " .. err, vim.log.levels.ERROR)
+	    end
+	else
+	    print("Logic is not yet implemented for this filetype.")
+	end
     end, { desc = "Slime Send Selection (Scroll)" })
 
     -- Use :SlimeConfig

@@ -116,3 +116,4 @@ vim.keymap.set("n", '<leader>h', function()
 end,
 { desc = "Toggle inlay hints" })
 
+vim.keymap.set({"n", "v"}, "<Tab>", "<C-w>w", { desc = '<C-w>w (switch windows)' })
