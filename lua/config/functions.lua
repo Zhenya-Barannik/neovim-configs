@@ -203,3 +203,21 @@ function Scroll_terminal_to_bottom()
     end
 end
 
+function Send_key_to_other_window(key)
+  local current_win = vim.api.nvim_get_current_win()
+  local windows = vim.api.nvim_tabpage_list_wins(0)
+  local target_win = nil
+  for _, win in ipairs(windows) do
+    if win ~= current_win then
+      target_win = win
+      break
+    end
+  end
+
+  if target_win and vim.api.nvim_win_is_valid(target_win) then
+    local scroll_cmd = vim.api.nvim_replace_termcodes(key, true, false, true)
+    vim.api.nvim_win_call(target_win, function()
+      vim.cmd("normal! " .. scroll_cmd)
+    end)
+  end
+end

@@ -6,15 +6,6 @@ map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", { desc = "Go to Definiti
 -- From LazyVim
 map("n", "gy", "<cmd>lua vim.lsp.buf.type_definition()<cr>", { desc = "Go to Type Definition" })
 
--- Move Lines (from LazyVim)
--- https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
-map("n", "<A-j>", "<cmd>execute 'move .+' . v:count1<cr>==", { desc = "Move line Down" })
-map("n", "<A-k>", "<cmd>execute 'move .-' . (v:count1 + 1)<cr>==", { desc = "Move line Up" })
-map("i", "<A-j>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move line Down" })
-map("i", "<A-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move line Up" })
-map("v", "<A-j>", ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv", { desc = "Move selected lines Down" })
-map("v", "<A-k>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", { desc = "Move selected lines Up" })
-
 -- Close floating windows, or send q in normal if none
 -- Can be useful to close documentation (K in normal mode), diagnostic (Ctrl-W d in normal mode)
 map("n", "q", function()
@@ -34,6 +25,7 @@ map("n", "\\", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
 -- https://github.com/nvim-telescope/telescope.nvim but for all modes
 map({"n", "v", "i", "t"}, "<C-/>", Show_keymaps_for_current_mode, { desc = "Show keymaps for current mode" })
+
 
 -- Maps to Cmd+Space
 map({ "i", "x", "n", "s" }, "<C-Space>", Save_and_build, { desc = "Save and Build" })
@@ -116,4 +108,31 @@ vim.keymap.set("n", '<leader>h', function()
 end,
 { desc = "Toggle inlay hints" })
 
+vim.keymap.set("n", '<leader>l', function()
+    Toggle_keyboard_layout()
+end,
+{ desc = "Toggle keyboard layout" })
+
 vim.keymap.set({"n", "v"}, "<Tab>", "<C-w>w", { desc = '<C-w>w (switch windows)' })
+
+-- Move Lines (from LazyVim)
+-- https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
+map("n", "<M-j>", "<cmd>execute 'move .+' . v:count1<cr>==", { desc = "Move line Down" })
+map("n", "<M-k>", "<cmd>execute 'move .-' . (v:count1 + 1)<cr>==", { desc = "Move line Up" })
+map("i", "<M-j>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move line Down" })
+map("i", "<M-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move line Up" })
+map("v", "<M-j>", ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv", { desc = "Move selected lines Down" })
+map("v", "<M-k>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", { desc = "Move selected lines Up" })
+
+-- Scroll the next window (down)
+vim.keymap.set({'n', 'i', 't'}, '<M-d>', function()
+  Send_key_to_other_window("<C-d>")
+end, { desc = "Scroll other window down" })
+
+-- Scroll the next window (up)
+vim.keymap.set({'n', 'i', 't'}, '<M-u>', function()
+  Send_key_to_other_window("<C-u>")
+end, { desc = "Scroll other window up" })
+
+vim.keymap.set({"n", "v", "i"}, "<M-Down>", "<cmd>cnext<CR>", { desc = 'Next item in the quicklist' })
+vim.keymap.set({"n", "v", "i"}, "<M-Up>", "<cmd>cprev<CR>", { desc = 'Prev item in the quicklist' })
