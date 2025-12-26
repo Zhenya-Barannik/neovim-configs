@@ -38,40 +38,20 @@ map({ "n", "t" }, "<M-h>", Toggle_terminal, { desc = "Toggle Terminal" })
 -- Esc will exit insert mode in terminal
 map('t', '<Esc>', [[<C-\><C-n>]], { desc = "Terminal to Normal Mode" })
 
--- Leader keybinds
+-- Leader keybindings
+-- <leader>fc from LazyVim https://www.lazyvim.org/keymaps
+map("n", "<leader>fc", "<cmd>Telescope find_files cwd=~/.config/nvim<cr>", { desc = "Config Files" })
 
--- <leader>fc (from LazyVim)
-map("n", "<leader>fc", "<cmd>Telescope find_files cwd=~/.config/nvim<cr>", { desc = "Find Config File" })
+-- <leader>fb from LazyVim https://www.lazyvim.org/keymaps
+map("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Buffers" })
 
--- <leader>fg (from Telescope)
--- https://github.com/nvim-telescope/telescope.nvim
--- Improved version of map("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { desc = "Live grep" })
-map("n", "<leader>fg", function()
-    local cwd = vim.fn.getcwd()
-    vim.cmd("Telescope live_grep cwd=" .. cwd)
-    vim.notify(string.format("SEARCHING IN: %s", cwd), vim.log.levels.INFO)
-end, { desc = "Grep in cwd" })
-
-map("n", "<leader>gg", function()
-    local git_root = Get_git_root()
-    if not git_root then
-	print("Not inside a Git repository")
-	return
-    end
-    vim.cmd("Telescope live_grep cwd=" .. git_root)
-    vim.notify(string.format("SEARCHING IN: %s", git_root), vim.log.levels.INFO)
-end, { desc = "Grep in git repo" })
-
--- <leader>fb is from LazyVim
-map("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Find Buffers" })
-
--- <leader>fr is from LazyVim
+-- <leader>fr from LazyVim https://www.lazyvim.org/keymaps
 map("n", "<leader>fr", function()
     require('telescope.builtin').oldfiles({ only_cwd = false })
-end, { desc = "Recent Files" })
+end, { desc = "Recent Files"})
 
--- Improved version of map("n", "<leader>fg", "<cmd>Telescope git_files<cr>", { desc = "Find Git Files" }) or
--- (Changed from LazyVim)
+-- <leader>fg from LazyVim https://www.lazyvim.org/keymaps
+-- but changed to <leader>ff
 map("n", "<leader>ff", function()
     local git_root = Get_git_root()
     if not git_root then
@@ -81,7 +61,32 @@ map("n", "<leader>ff", function()
     require('telescope.builtin').git_files({ cwd = git_root })
 end, { desc = "Git Files" })
 
--- -- Improved version of map("n", "<leader>gf", "<cmd>Telescope git_bcommits<cr>", { desc = "File History" })
+-- Telescope default suggestion
+-- vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope live grep' })
+-- https://github.com/nvim-telescope/telescope.nvim
+vim.keymap.set('n', '<leader>fg', function()
+    require('telescope.builtin').live_grep({
+	-- fnamemodify(..., ":~") shortens /Users/name to ~
+	prompt_title = 'Live Grep in ' .. vim.fn.fnamemodify(vim.fn.getcwd(), ":~"),
+    })
+end, { desc = 'Grep in CWD' })
+
+-- Improved version of map("n", "<leader>gc", "<cmd>Telescope git_commits<cr>", { desc = "Git Commits" })
+-- (Keybind as in LazyVim)
+map("n", "<leader>gc", function()
+    local git_root = Get_git_root()
+    if not git_root then
+	print("Not inside a Git repository")
+	return
+    end
+    require('telescope.builtin').git_commits({
+	-- fnamemodify(..., ":~") shortens /Users/name to ~
+	prompt_title = 'Commits in ' .. vim.fn.fnamemodify(git_root, ":~"),
+	cwd = git_root,
+    })
+end, { desc = "Git Commits" })
+
+-- Improved version of map("n", "<leader>gf", "<cmd>Telescope git_bcommits<cr>", { desc = "File History" })
 -- (Keybind as in LazyVim)
 map("n", "<leader>gf", function()
     local git_root = Get_git_root()
@@ -89,19 +94,26 @@ map("n", "<leader>gf", function()
 	print("Not inside a Git repository")
 	return
     end
-    require('telescope.builtin').git_bcommits({ cwd = git_root })
+    require('telescope.builtin').git_bcommits({
+	-- fnamemodify(..., ":~") shortens /Users/name to ~
+	prompt_title = 'History for ' .. vim.fn.expand("%:t"),
+	cwd = git_root,
+    })
 end, { desc = "Git File History" })
---
--- -- Improved version of map("n", "<leader>gc", "<cmd>Telescope git_commits<cr>", { desc = "Git Commits" })
--- -- (Keybind as in LazyVim)
-map("n", "<leader>gc", function()
+
+
+map("n", "<leader>gg", function()
     local git_root = Get_git_root()
     if not git_root then
 	print("Not inside a Git repository")
 	return
     end
-    require('telescope.builtin').git_commits({ cwd = git_root })
-end, { desc = "Git Commits" })
+    require('telescope.builtin').live_grep({
+	-- fnamemodify(..., ":~") shortens /Users/name to ~
+	prompt_title = 'Live Grep in ' .. vim.fn.fnamemodify(git_root, ":~"),
+	cwd = git_root,
+    })
+end, { desc = "Grep in Git Repo" })
 
 vim.keymap.set("n", '<leader>h', function()
     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({0}),{0})
@@ -112,8 +124,6 @@ vim.keymap.set("n", '<leader>l', function()
     Toggle_keyboard_layout()
 end,
 { desc = "Toggle keyboard layout" })
-
-vim.keymap.set({"n", "v"}, "<Tab>", "<C-w>w", { desc = '<C-w>w (switch windows)' })
 
 -- Move Lines (from LazyVim)
 -- https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
@@ -134,5 +144,16 @@ vim.keymap.set({'n', 'i', 't'}, '<M-u>', function()
   Send_key_to_other_window("<C-u>")
 end, { desc = "Scroll other window up" })
 
-vim.keymap.set({"n", "v", "i"}, "<M-Down>", "<cmd>cnext<CR>", { desc = 'Next item in the quicklist' })
-vim.keymap.set({"n", "v", "i"}, "<M-Up>", "<cmd>cprev<CR>", { desc = 'Prev item in the quicklist' })
+function navigate_quickfix(command)
+    pcall(vim.cmd, command)
+    vim.cmd("norm! zz")
+    vim.cmd("copen")
+end
+
+vim.keymap.set({"n", "v", "i"}, "<M-Down>", function() navigate_quickfix("cnext") end)
+vim.keymap.set({"n", "v", "i"}, "<M-Up>", function() navigate_quickfix("cprev") end)
+
+vim.keymap.set({'i'}, '<C-r><C-r>', '<C-r>*', {
+    noremap = true,
+    desc = "Paste from system clipboard"
+})

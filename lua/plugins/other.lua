@@ -70,7 +70,7 @@ return {
 	keys = {
 	    -- Will use Telescope if installed or a vim.ui.select picker otherwise
 	    -- { "<leader>wa", "<cmd>AutoSession toggle<CR>", desc = "Toggle autosave" },
-	    { "<leader>fs", "<cmd>AutoSession search<CR>", desc = "Find Session" },
+	    { "<leader>fs", "<cmd>AutoSession search<CR>", desc = "Session" },
 	    { "<leader>p", "<cmd>AutoSession save<CR>", desc = "Session save" },
 	},
 

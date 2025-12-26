@@ -39,3 +39,11 @@ vim.keymap.set({"n", "v", "i"}, "<C-c>", Interrupt_terminal_and_stop_insert, { d
 
  -- Modified gx that will reveal file in finder instead of opening it 
 vim.keymap.set('n', 'gx', Reveal_file_or_open_URL, { desc = "Reveal file or open URL", noremap = true })
+
+-- Modified gd that will save current position.
+-- (it can be restored after the quickfix window is closed)
+vim.keymap.set("n", "gd", function()
+    save_current_context()
+    vim.lsp.buf.definition()
+end, { desc = "Go to definition (saving position)" })
+

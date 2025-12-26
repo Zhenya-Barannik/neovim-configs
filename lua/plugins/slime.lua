@@ -9,27 +9,40 @@ return {
     -- Slime setup
     init = function()
     vim.g.slime_target = "neovim" -- "tmux" can also be used here
-    vim.g.slime_bracketed_paste = 1 -- indentation handling for Julia code
+    vim.g.slime_bracketed_paste = 1
     vim.g.slime_no_mappings = 1
     vim.g.slime_cell_delimiter = "##"
 
     -- Normal Mode (Send Cell)
-    vim.keymap.set("n", "<C-q>", function()
+    vim.keymap.set("n", "<C-2>", function()
 	trigger_slime_and_scroll("<Plug>SlimeSendCell")
-    end, { desc = "Slime Send Cell (Scroll)" })
+    end, { desc = "Slime Send Cell (and Scroll)" })
 
-    -- Insert Mode (Send Cell) - Restores Cursor Position
-    vim.keymap.set("i", "<C-q>", function()
+    vim.keymap.set("n", "<C-1>", function()
+	trigger_slime_and_scroll("<Plug>SlimeLineSend")
+    end, { desc = "Slime Send Line (and Scroll)" })
+
+    -- Insert Mode (Send Cell) and restores cursor position
+    vim.keymap.set("i", "<C-2>", function()
 	local win = vim.api.nvim_get_current_win()
 	local original_pos = vim.api.nvim_win_get_cursor(win)
 	vim.cmd("stopinsert")
 	trigger_slime_and_scroll("<Plug>SlimeSendCell")
 	vim.api.nvim_win_set_cursor(win, original_pos)
 	vim.api.nvim_feedkeys("a", "n", true)
-    end, { desc = "Slime Send Cell (Scroll)" })
+    end, { desc = "Slime Send Cell (and Scroll)" })
+
+    vim.keymap.set("i", "<C-1>", function()
+	local win = vim.api.nvim_get_current_win()
+	local original_pos = vim.api.nvim_win_get_cursor(win)
+	vim.cmd("stopinsert")
+	trigger_slime_and_scroll("<Plug>SlimeLineSend")
+	vim.api.nvim_win_set_cursor(win, original_pos)
+	vim.api.nvim_feedkeys("a", "n", true)
+    end, { desc = "Slime Send Line (and Scroll)" })
 
     -- Visual Mode (Send Selection/Region)
-    vim.keymap.set("v", "<C-q>", function()
+    vim.keymap.set("v", "<C-2>", function()
 	local filetype = vim.bo.filetype
 
 	local esc = vim.api.nvim_replace_termcodes("<Esc>", true, false, true)
@@ -48,7 +61,8 @@ return {
 	else
 	    print("Logic is not yet implemented for this filetype.")
 	end
-    end, { desc = "Slime Send Selection (Scroll)" })
+    end, { desc = "Slime Send Selection (and Scroll)" })
+
 
     -- Use :SlimeConfig
     -- vim.keymap.set("n", "<leader>sk", "<Plug>SlimeConfig", { remap = true, desc = "Slime Config" })

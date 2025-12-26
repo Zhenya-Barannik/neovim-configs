@@ -70,5 +70,4 @@ vim.lsp.config('bashls', {
     },
 })
 vim.lsp.enable('bashls') -- Works because of "neovim/nvim-lspconfig"
-
 vim.lsp.enable('julials')

@@ -1,8 +1,18 @@
 -- Function to get first terminal buffer if there are any
-function Find_terminal_buffer()
+function Find_terminal_buffer(requested_terminal_type)
+    local valid_types = { zsh = true, julia = true, any = true }
+    assert(valid_types[requested_terminal_type], "Target must be 'zsh', 'julia', or 'any'")
+
     for _, buf in ipairs(vim.api.nvim_list_bufs()) do
 	if vim.bo[buf].buftype == 'terminal' then
-	    return buf
+	    if requested_terminal_type == "any" then
+                return buf
+            end
+
+	    local process_name = Get_terminal_process_name(buf)
+	    if process_name and string.find(process_name, requested_terminal_type) then
+		return buf
+	    end
 	end
     end
     return nil
@@ -11,7 +21,7 @@ end
 -- Function to interrupt terminal (if there is a terminal) and exit from insert mode
 -- Acts as default Ctrl-C if there is no terminal
 function Interrupt_terminal_and_stop_insert()
-    local t_buffer = Find_terminal_buffer()
+    local t_buffer = Find_terminal_buffer("any")
     if t_buffer ~= nil then
         local job_id = vim.b[t_buffer].terminal_job_id
         if job_id then
@@ -45,7 +55,7 @@ end
 
 -- Function to toggle terminal
 function Toggle_terminal()
-    local t_buffer = Find_terminal_buffer() -- attemps to find terminal buffer, will pick the first found
+    local t_buffer = Find_terminal_buffer("any") -- attemps to find terminal buffer, will pick the first found
     if t_buffer ~= nil then
 	-- If there is at least one terminal buffer
 	local t_window_ids = vim.fn.win_findbuf(t_buffer) -- find windows for found terminal buffer
@@ -82,9 +92,8 @@ function Toggle_terminal()
 end
 
 -- Function to find or create a terminal buffer and run the command
-function Run_in_terminal(cmd)
-    local t_buffer = Find_terminal_buffer()
-
+function Run_in_zsh(cmd)
+    local t_buffer = Find_terminal_buffer("zsh")
     if t_buffer then
         local term_job_id = vim.b[t_buffer].terminal_job_id
 	-- Scroll to bottom in the terminal buffer
@@ -109,9 +118,11 @@ function Save_and_build()
     local file_pathname = vim.fn.expand('%:p')
     local file_dir = vim.fn.expand("%:p:h")
     local file_name = vim.fn.expand("%:t:r") -- Get the filename without extension
+    local filetype = vim.bo.filetype
+    local script_name = string.format("%s/%s.sh", file_dir, file_name) -- Example: for data.py we will try to find data.sh
 
-    -- Example: for data.py we will try to find data.sh
-    local script_name = string.format("%s/%s.sh", file_dir, file_name)
+    -- If shell file is found: execute shell file.
+    -- Else: look at the exact file type to decide what to do next. 
     if vim.fn.filereadable(script_name) == 1 then
 	-- Crafts a composite command that will 
 	-- (1) source .zshrc,
@@ -122,43 +133,40 @@ function Save_and_build()
 	    file_dir,
 	    script_name
 	)
-	print(string.format("RUNNING: \"%s\"", script_name))
-        Run_in_terminal(full_cmd)
+	print(string.format("ZSH RUNNING: \"%s\"", script_name))
+        Run_in_zsh(full_cmd)
 	return
-    else
-	local filetype = vim.bo.filetype
 
-	-- Julia
-	if filetype == "julia" then
-	    print(string.format("Sending to REPL: \"%s\"", file_name .. ".jl"))
-	    local julia_cmd = string.format('include("%s")\n', file_pathname)
-	    vim.fn["slime#send"](julia_cmd)
-	    vim.schedule(Scroll_terminal_to_bottom)
-	    return
+    -- Julia
+    elseif filetype == "julia" then
+	print(string.format("REPL RUNNING: \"%s\"", file_name .. ".jl"))
+	local julia_cmd = string.format('include("%s")\n', file_pathname)
+	vim.fn["slime#send"](julia_cmd)
+	vim.schedule(Scroll_terminal_to_bottom)
+	return
 
-	-- Python
-	elseif filetype == "python" then
-	    local full_cmd = string.format(
-		"zsh -c 'source ~/.zshrc && python \"%s\"'",
-		file_pathname
-	    )
-	    print(string.format("RUNNING: python \"%s\"", file_pathname))
-	    Run_in_terminal(full_cmd)
-	    return
+    -- Python
+    elseif filetype == "python" then
+	local full_cmd = string.format(
+	    "zsh -c 'source ~/.zshrc && python \"%s\"'",
+	    file_pathname
+	)
+	print(string.format("ZSH RUNNING: python \"%s\"", file_pathname))
+	Run_in_zsh(full_cmd)
+	return
 
-	-- Lua
-	elseif filetype == "lua" then
-	    print(string.format("NVIM RUNNING: so \"%s\"", file_pathname))
-	    vim.cmd("so")
-	    return
+    -- Lua
+    elseif filetype == "lua" then
+	print(string.format("NVIM RUNNING: so \"%s\"", file_pathname))
+	vim.cmd("so")
+	return
 
-	-- HTML
-	elseif filetype == "html" or filetype == "xhtml" then
-	    local full_cmd = string.format("open -g \"%s\"", file_pathname)
-	    print(string.format("RUNNING: \"%s\"", full_cmd))
-	    vim.fn.system(full_cmd)
-	    return
-	end
+    -- HTML
+    elseif filetype == "html" or filetype == "xhtml" then
+	local full_cmd = string.format("open -g \"%s\"", file_pathname)
+	print(string.format("SHELL RUNNING: %s", full_cmd))
+	vim.fn.system(full_cmd)
+	return
     end
 end
 
@@ -220,4 +228,73 @@ function Send_key_to_other_window(key)
       vim.cmd("normal! " .. scroll_cmd)
     end)
   end
+end
+
+-- Start watching current file
+local function watch_file()
+  local buffer_id = vim.api.nvim_get_current_buf()
+  local file_pathname = vim.api.nvim_buf_get_name(buffer_id)
+  local watcher = vim.uv.new_fs_event()
+    watcher:start(file_pathname, {}, vim.schedule_wrap(
+	  function()
+	      if vim.api.nvim_buf_is_valid(buffer_id) then
+		  vim.api.nvim_buf_call(buffer_id, function()
+		      vim.cmd("edit!") -- :e
+		  end)
+	      else
+		  watcher:stop() -- Cleanup if buffer is closed
+	      end
+	  end))
+	  print("Watching: " .. file_pathname)
+end
+
+vim.api.nvim_create_user_command("Watch", watch_file, {})
+
+-- Saves context (it can be used to restore context in the future) 
+saved_context = nil
+function save_current_context()
+    saved_context = {
+        buf = vim.api.nvim_get_current_buf(),
+        win = vim.api.nvim_get_current_win(),
+        view = vim.fn.winsaveview(),
+    }
+end
+
+-- Close buffer and restore saved context (if it exists)
+function close_and_restore()
+    vim.cmd("close")
+    if saved_context and vim.api.nvim_buf_is_valid(saved_context.buf) then
+        if vim.api.nvim_win_is_valid(saved_context.win) then
+            vim.api.nvim_set_current_win(saved_context.win)
+        end
+        vim.api.nvim_set_current_buf(saved_context.buf)
+        vim.fn.winrestview(saved_context.view)
+        saved_context = nil
+    end
+end
+
+-- Return the name of a (child) process running inside shell. 
+-- Can used to distinguish shell running zsh and julia 
+function Get_terminal_process_name(buf)
+    local job_id = vim.b[buf].terminal_job_id
+    if not job_id then return "" end
+    local ppid = vim.fn.jobpid(job_id)
+    local children = vim.fn.systemlist("pgrep -P " .. ppid)
+    local target_pid = ppid
+    if #children > 0 then
+	target_pid = children[#children]
+    end
+    local result = vim.fn.systemlist("ps -p " .. target_pid .. " -o comm=")
+    return result[1] or ""
+end
+
+function Create_julia_terminal(env_path)
+    local cmd = "julia"
+    if env_path and env_path ~= "" then
+	cmd = cmd .. " --project=" .. env_path
+    end
+    vim.cmd("belowright split")
+    vim.cmd("term " .. cmd)
+    -- local buf = vim.api.nvim_get_current_buf()
+    -- return buf
 end

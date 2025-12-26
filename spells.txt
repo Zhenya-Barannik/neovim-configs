@@ -14,6 +14,7 @@
 :map - show key mappings
 :verbose map <C-s> - Show commands mapped to a specific keybind, <C-s> here 
 :%y - yank whole buffer
+:r! ls - print results of ls to the buffer
 
 Z Q - Quit without checking for changes (same as :q!)
 Z Z — Write changes to current file and close window
@@ -77,6 +78,7 @@ m a - Create local mark a (for use inside this buffer)
 m A - Create global mark A
 Ctrl-u - Delete line before cursor in insert mode
 Ctrl-w – Delete word before cursor in insert mode
+Ctrl-d, Ctrl-t - Indent/remove indent in insert mode
 
 z f — Create fold from visual selection
 z o - Open fold
