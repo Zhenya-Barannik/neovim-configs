@@ -92,7 +92,6 @@ g q - Transform long single line into many shorter lines
 n (N) - select next (previous) item while searching.
 :%s/>>>/}}/g - global search end change of >>> symbols to }} symbols
 
-K - get info when cursor is on symbol
 Ctrl-W d - info on error/warning
 i_Ctrl-X_Ctrl-O - Ctrl-X Ctrl-O triggers omni completion from insert mode
 i_Ctrl-X_Ctrl-F - Ctrl-X Ctrl-F triggers filename completion from insert mode
@@ -120,6 +119,7 @@ n  <M-n> (Alt-n): Move to next reference (is not mapped in defaults)
 :nmap <C-q> - gives info what <C-q> does
 :lua= vim.api.nvim_list_bufs() - prints output of nvim_list_bufs()
 
+K - get info when cursor is on symbol
 i <C-k> (Ctrl-K in insert mode) - show signature
 n . (dot in normal mode) - repeat last action
 v : lua Enter - evaluate selected lua code

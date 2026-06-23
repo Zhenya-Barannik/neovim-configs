@@ -28,7 +28,7 @@ map({"n", "v", "i", "t"}, "<C-/>", Show_keymaps_for_current_mode, { desc = "Show
 
 
 -- Maps to Cmd+Space
-map({ "i", "x", "n", "s" }, "<C-Space>", Save_and_build, { desc = "Save and Build" })
+-- map({ "i", "x", "n", "s" }, "<C-Space>", Save_and_build, { desc = "Save and Build" })
 
 -- n_<Alt+h> seems to be not mapped by default
 -- Maps it to toggle terminal (from NvChad)

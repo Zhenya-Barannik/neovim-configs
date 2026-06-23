@@ -11,19 +11,19 @@ return {
     vim.g.slime_target = "neovim" -- "tmux" can also be used here
     vim.g.slime_bracketed_paste = 1
     vim.g.slime_no_mappings = 1
-    vim.g.slime_cell_delimiter = "##"
+    vim.g.slime_cell_delimiter = [[^\s*$]] -- Newline(s)
 
     -- Normal Mode (Send Cell)
-    vim.keymap.set("n", "<C-2>", function()
+    vim.keymap.set("n", "<M-c>", function()
 	trigger_slime_and_scroll("<Plug>SlimeSendCell")
     end, { desc = "Slime Send Cell (and Scroll)" })
 
-    vim.keymap.set("n", "<C-1>", function()
+    vim.keymap.set("n", "<M-v>", function()
 	trigger_slime_and_scroll("<Plug>SlimeLineSend")
     end, { desc = "Slime Send Line (and Scroll)" })
 
     -- Insert Mode (Send Cell) and restores cursor position
-    vim.keymap.set("i", "<C-2>", function()
+    vim.keymap.set("i", "<M-c>", function()
 	local win = vim.api.nvim_get_current_win()
 	local original_pos = vim.api.nvim_win_get_cursor(win)
 	vim.cmd("stopinsert")
@@ -32,7 +32,7 @@ return {
 	vim.api.nvim_feedkeys("a", "n", true)
     end, { desc = "Slime Send Cell (and Scroll)" })
 
-    vim.keymap.set("i", "<C-1>", function()
+    vim.keymap.set("i", "<M-v>", function()
 	local win = vim.api.nvim_get_current_win()
 	local original_pos = vim.api.nvim_win_get_cursor(win)
 	vim.cmd("stopinsert")
@@ -42,7 +42,7 @@ return {
     end, { desc = "Slime Send Line (and Scroll)" })
 
     -- Visual Mode (Send Selection/Region)
-    vim.keymap.set("v", "<C-2>", function()
+    vim.keymap.set("v", "<M-c>", function()
 	local filetype = vim.bo.filetype
 
 	local esc = vim.api.nvim_replace_termcodes("<Esc>", true, false, true)
