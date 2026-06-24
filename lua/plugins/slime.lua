@@ -13,16 +13,27 @@ return {
     vim.g.slime_no_mappings = 1
     vim.g.slime_cell_delimiter = [[^\s*$]] -- Newline(s)
 
+    -- Normal Mode (Send Single Line)
+    vim.keymap.set("n", "<M-x>", function()
+	trigger_slime_and_scroll("<Plug>SlimeLineSend")
+    end, { desc = "Slime Send Line (and Scroll)" })
+
     -- Normal Mode (Send Cell)
     vim.keymap.set("n", "<M-c>", function()
 	trigger_slime_and_scroll("<Plug>SlimeSendCell")
     end, { desc = "Slime Send Cell (and Scroll)" })
 
-    vim.keymap.set("n", "<M-v>", function()
+    -- Insert Mode (Send Single Line) and restore cursor position
+    vim.keymap.set("i", "<M-x>", function()
+	local win = vim.api.nvim_get_current_win()
+	local original_pos = vim.api.nvim_win_get_cursor(win)
+	vim.cmd("stopinsert")
 	trigger_slime_and_scroll("<Plug>SlimeLineSend")
+	vim.api.nvim_win_set_cursor(win, original_pos)
+	vim.api.nvim_feedkeys("a", "n", true)
     end, { desc = "Slime Send Line (and Scroll)" })
 
-    -- Insert Mode (Send Cell) and restores cursor position
+    -- Insert Mode (Send Cell) and restore cursor position
     vim.keymap.set("i", "<M-c>", function()
 	local win = vim.api.nvim_get_current_win()
 	local original_pos = vim.api.nvim_win_get_cursor(win)
@@ -32,14 +43,6 @@ return {
 	vim.api.nvim_feedkeys("a", "n", true)
     end, { desc = "Slime Send Cell (and Scroll)" })
 
-    vim.keymap.set("i", "<M-v>", function()
-	local win = vim.api.nvim_get_current_win()
-	local original_pos = vim.api.nvim_win_get_cursor(win)
-	vim.cmd("stopinsert")
-	trigger_slime_and_scroll("<Plug>SlimeLineSend")
-	vim.api.nvim_win_set_cursor(win, original_pos)
-	vim.api.nvim_feedkeys("a", "n", true)
-    end, { desc = "Slime Send Line (and Scroll)" })
 
     -- Visual Mode (Send Selection/Region)
     vim.keymap.set("v", "<M-c>", function()
